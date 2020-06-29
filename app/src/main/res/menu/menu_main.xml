@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.mchat.recinos.MainActivity" >
+   <!-- Can use icon attribute to just use image -->
+    <item
+        android:id="@+id/sign_out"
+        android:title= "@string/sign_out"
+        app:showAsAction="ifRoom"
+        />
+
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/delete_acct"
+        android:title= "@string/delete_acct"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        />
+
+</menu>

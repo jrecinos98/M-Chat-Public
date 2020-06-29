@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.mchat.recinos">
+
+    <dist:module dist:instant="true" />
+    <uses-permission android:name = "android.permission.INTERNET" />
+    <uses-permission android:name = "android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name = "android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name = "android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-feature android:name="android.hardware.camera"
+                  android:required="false" />
+
+
+    <application
+        android:name ="com.mchat.recinos.MyApplication"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+
+        tools:replace="android:allowBackup"
+
+        >
+
+        <!-- the name gets resolved to com.mchat.recinos.MainActivity-->
+        <activity
+            android:name=".Activities.EntryActivity"
+            android:label="@string/app_name"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <!-- The label and icon (when stated) in the activity tag is inherited by children (in this case intent-filter) and are used to display the icon and label when user prompted -->
+            <intent-filter>
+                <!-- These are the kinds of intents the app can satisfy when requested by another app. User will be prompted if multiple apps can do it -->
+                <!-- The ACTION_MAIN intent declares that this is the entry point of the app and does not expect an intent data -->
+                <action android:name="android.intent.action.MAIN" />
+
+                <action android:name="android.intent.action.VIEW" />
+                <!-- The CATEGORY_LAUNCHER category indicates that this activity's icon should be placed in the system's app launcher -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboard|orientation|screenSize"
+            android:launchMode="standard"
+            >
+        </activity>
+        <!-- launchMode determines how a new instance of an Activity is associated to the current task -->
+        <activity
+            android:name=".Activities.SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboard|orientation|screenSize"
+            android:launchMode="standard"
+            >
+        </activity>
+        <activity
+            android:name=".Activities.ChatActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboard|orientation|screenSize"
+            android:launchMode="standard"
+            >
+        </activity>
+
+        <activity
+            android:name=".Activities.AuthActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboard|orientation|screenSize"
+            android:launchMode="standard"
+            >
+        </activity>
+        <activity
+            android:name=".Fragments.SignUpFragment"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboard|orientation|screenSize"
+            android:launchMode="standard"
+            >
+        </activity>
+        <activity
+            android:name=".Activities.NewMessageActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboard|orientation|screenSize"
+            android:launchMode="standard"
+            >
+        </activity>
+    </application>
+
+</manifest>

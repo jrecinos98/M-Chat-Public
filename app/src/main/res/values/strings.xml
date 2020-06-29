@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">                        M\'Chat                     </string>
+    <string name="action_settings">                 Settings                    </string>
+    <string name="delete_conversation">             Delete Chat                 </string>
+    <string name="sign_out">                        Sign Out                    </string>
+    <string name="connect">                         Connect                     </string>
+    <string name="msg_hint">                        Message                     </string>
+    <string name="send_msg_desc">                   Send Message                </string>
+    <string name="send_img_desc">                   Send Image                  </string>
+    <string name="log_in_wait">                     Please wait.                </string>
+
+    <string name="google_button_text">              Google Authentication       </string>
+    <string name="or">                              <b>--- OR ---</b>           </string>
+    <string name="email_user_hint">                 Email/Username              </string>
+    <string name="password_hint">                   Password                    </string>
+    <string name="login">                           LogIn                       </string>
+    <string name="no_acct_question">                No account yet?             </string>
+    <string name="create_acct">                     <u>Create one.</u>          </string>
+
+    <string name="sign_up_reset">                   Reset Fields                </string>
+    <string name="sign_up_name">                    Name                        </string>
+    <string name="sign_up_username">                Username                    </string>
+    <string name="sign_up_usr_description">         Description                 </string>
+    <string name="sign_up_number">                  Phone Number (optional)     </string>
+    <string name="sign_up_email">                   Email                       </string>
+    <string name="sign_up_confirm_password">        Confirm Password            </string>
+    <string name="sign_up_button">                  <b>Register.</b>            </string>
+
+    <string name="delete_acct">                     Delete Account              </string>
+    <string name = "no_chats_message">              Once you start a new
+                                                    conversation, you\'ll see
+                                                    it listed here              </string>
+    <string name = "no_calls_message">              Once you have a new phone
+                                                    conversation, you\'ll see
+                                                    it listed here              </string>
+    <string name="test_msg">                        Add Test Msg                </string>
+    <string name="conversation_setting">            Chat Settings               </string>
+    <string name="new_msg">                         New Message                 </string>
+    <string name="to">                              To                          </string>
+    <string name="image_placeholder_text">          Image                       </string>
+
+</resources>

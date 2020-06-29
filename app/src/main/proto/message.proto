@@ -1,0 +1,70 @@
+/*
+Using proto version 2 syntax
+*/
+syntax = "proto2";
+
+package message;
+
+option java_package = "Protobuf";
+option java_outer_classname = "ProtoMessage";
+
+
+//TODO To figure out how to determine what chat to add group message to.
+//TODO modify Chat Entity to be able to hold a list of UIDs (group chats)
+message Authentication{
+	required uint32 	 type   = 1;
+	//For authentication
+	required string sender_uid  = 2;
+
+	//TODO Require token or something to know they are legit when authenticating
+	optional bytes token = 3;
+}
+message Ack{
+	required uint32 	 type   = 1;
+	required uint32      msg_id = 2 [default = 0];
+}
+message Message{
+	//Some types can be reserved to ACK. 1 can acknowledge auth, 2 acknowledge regular message etc..
+	//3 can be single person message, 4 can signify group chat
+	//Another (5 maybe) can be used to represent a message that was retrieved from firestore. These messages will have the time stamp set so the receiver knows when it was sent
+	required uint32 	 type   = 1;
+
+	//ID of the message that was received, or ID of message that we are sending ACK for.
+	//There can be a default ID for auth messages (if type is auth then dont even check)
+	required uint32      msg_id = 2 [default = 0];
+
+	optional string 	sender_uid  = 3;
+
+	//TODO Making this field repeated can allow for multiple uid (aka group chats)
+	optional string 	dest_uid = 4;
+
+
+	//TODO make it required passing the encrypted key used to encrypt the message
+	optional string key			= 5;
+
+	//May want to make this repeated so that firebase messages can be  send  together
+	optional Payload 	 message    = 6;
+
+	optional uint64 time_stamp  = 7;
+
+}
+message Payload{
+	//Type of message
+	required uint32 op_code 	= 1 [default = 0];
+
+	//Can add a hash field for security, etc..
+	optional string hash  		= 2;
+
+
+	//For text messages
+	optional string text   		= 3;
+
+	//For images, audio, video, etc.. (can be distinguished based on the type
+	//Repeated means multiple files of same type can be sent at once
+	optional bytes  data   		= 4;
+
+    optional string mime_type   = 5;
+
+}
+
+

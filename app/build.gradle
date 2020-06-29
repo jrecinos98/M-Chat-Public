@@ -1,0 +1,122 @@
+apply plugin: 'com.android.application'
+//Application of protobuf plug-in
+apply plugin: 'com.google.protobuf'
+//Configure protobuf plug-in information
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+
+sourceSets {
+    main.java.srcDirs += "${protobuf.generatedFilesBaseDir}"
+}
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.0.0'
+    }
+    plugins {
+        javalite {
+            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove java
+            }
+            task.plugins {
+                javalite { }
+            }
+        }
+    }
+    generatedFilesBaseDir = "$projectDir/src/main/java/com/mchat/recinos/libs/proto"
+}
+// Apply the Performance Monitoring plugin
+apply plugin: 'com.google.firebase.firebase-perf'
+android {
+    compileSdkVersion 29
+    defaultConfig {
+        applicationId "com.mchat.recinos"
+        minSdkVersion 19
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        vectorDrawables{
+            useSupportLibrary true
+        }
+    }
+    buildTypes {
+        release {
+            multiDexKeepFile file('multidex-config.txt')
+            minifyEnabled true
+            // Enables resource shrinking, which is performed by the Android Gradle plugin.
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Add this extension
+            firebaseCrashlytics {
+                // Enable processing and uploading of native symbols to Crashlytics
+                // servers. By default, this is disabled to improve build speeds.
+                // This flag must be enabled to see properly-symbolicated native
+                // stack traces in the Crashlytics dashboard.
+                nativeSymbolUploadEnabled true
+            }
+        }
+        debug {
+            ext.enableCrashlytics = false
+        }
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+}
+
+dependencies {
+    //Debug implementation means that this is only available during debug (room)
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def room_version = "2.2.5"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation "androidx.exifinterface:exifinterface:1.2.0"
+    implementation "androidx.preference:preference:1.1.0"
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
+    implementation 'androidx.navigation:navigation-fragment:2.2.1'
+    implementation 'androidx.navigation:navigation-ui:2.2.1'
+
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation "androidx.drawerlayout:drawerlayout:1.0.0"
+
+    implementation 'com.android.support:multidex:2.0.1'
+
+    implementation 'com.google.firebase:firebase-analytics:17.3.0'
+    implementation 'com.google.firebase:firebase-auth:19.3.0'
+    implementation 'com.google.firebase:firebase-firestore:21.4.2'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
+
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
+
+    //Custom google button
+    implementation 'com.shobhitpuri.custombuttons:google-signin:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
+    implementation 'com.google.protobuf:protobuf-lite:3.0.1'
+
+    // Recommended: Add the Firebase SDK for Google Analytics.
+    implementation 'com.google.firebase:firebase-analytics:17.3.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta04'
+    // Add the dependency for the Performance Monitoring library
+    implementation 'com.google.firebase:firebase-perf:19.0.6'
+
+}

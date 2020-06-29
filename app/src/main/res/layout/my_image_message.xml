@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="5dp"
+    android:paddingVertical="10dp"
+    android:clipToPadding="false">
+
+    <ImageView
+        android:id="@+id/img_msg"
+        android:scaleType="centerInside"
+        android:layout_width="wrap_content"
+        android:maxWidth="250dp"
+        android:minWidth="230dp"
+        android:maxHeight="350dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="10dp"
+        android:layout_alignParentEnd="true"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+
+        android:elevation="5dp"
+        />
+</RelativeLayout>

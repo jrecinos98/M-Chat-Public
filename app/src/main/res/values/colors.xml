@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#584F75</color>
+    <color name="colorPrimaryDark">#342F46</color>
+    <color name="colorAccent">#3E5263</color>
+    <color name="tab_inactive">#8E8B8B</color>
+    <color name= "tab_active">@color/white</color>
+    <color name='white'>#EEE9E9</color>
+    <color name= "chat_background">@color/white</color>
+    <color name= "blue">@color/colorAccent</color>
+    <color name="black">#000</color>
+</resources>
