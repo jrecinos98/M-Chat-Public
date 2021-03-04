@@ -4,7 +4,7 @@ import androidx.room.Embedded;
 import androidx.room.Relation;
 
 import com.mchat.recinos.Backend.Entities.Chat;
-import com.mchat.recinos.Backend.Entities.Message;
+import com.mchat.recinos.Backend.Entities.Messages.Message;
 
 public class ChatAndMessage {
     @Embedded

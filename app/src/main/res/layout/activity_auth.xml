@@ -40,10 +40,10 @@
         android:visibility="gone"
         android:maxHeight="2dp"
         android:layout_marginTop="1dp"/>
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-    </FrameLayout>
+    </androidx.fragment.app.FragmentContainerView>
 </LinearLayout>

@@ -7,8 +7,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mchat.recinos.Backend.Entities.Latest;
-import com.mchat.recinos.Backend.Entities.Message;
+import com.mchat.recinos.Backend.Entities.Messages.Message;
 
 import java.util.List;
 
@@ -23,9 +22,6 @@ public interface MessageDao {
 
     @Query("SELECT * FROM messages WHERE id = :id")
     Message getMessageByID(long id);
-
-    @Query("SELECT * FROM latest_message")
-    LiveData<List<Latest>> getLatest();
 
     @Query("SELECT * FROM messages WHERE id IN (:messages)")
     LiveData<List<Message>> loadAllByIds(int[] messages);

@@ -9,7 +9,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 
 import com.mchat.recinos.Util.BitmapTransform;
-import com.mchat.recinos.Util.CONSTANTS;
+import com.mchat.recinos.Util.Constants;
 import com.mchat.recinos.Util.Encryption;
 
 import java.io.Serializable;
@@ -17,7 +17,7 @@ import java.security.PublicKey;
 import java.util.Arrays;
 
 @Entity (tableName = "contacts")
-public class Contact implements Serializable, Parcelable {
+public final class Contact implements Serializable, Parcelable {
     @ColumnInfo(name="uid")
     private String UID;
 
@@ -60,16 +60,20 @@ public class Contact implements Serializable, Parcelable {
             image = Arrays.copyOf(src, src.length);
         }
     }
+    @Ignore
+    public User getUser(){
+        return new User(this.getUID(), this.getName(), this.getUserName(), this.getPhoto_URL());
+    }
 
     public Contact(Parcel savedState){
         if (savedState != null) {
             Bundle saved = savedState.readBundle(getClass().getClassLoader());
             if(saved != null) {
-                UID = saved.getString(CONSTANTS.CONTACT_FIELDS.UID);
-                name = saved.getString(CONSTANTS.CONTACT_FIELDS.NAME);
-                userName = saved.getString(CONSTANTS.CONTACT_FIELDS.USERNAME);
-                public_key = saved.getString(CONSTANTS.CONTACT_FIELDS.PUBLIC_KEY);
-                image = saved.getByteArray(CONSTANTS.CONTACT_FIELDS.IMAGE);
+                UID = saved.getString(Constants.CONTACT_FIELDS.UID);
+                name = saved.getString(Constants.CONTACT_FIELDS.NAME);
+                userName = saved.getString(Constants.CONTACT_FIELDS.USERNAME);
+                public_key = saved.getString(Constants.CONTACT_FIELDS.PUBLIC_KEY);
+                image = saved.getByteArray(Constants.CONTACT_FIELDS.IMAGE);
             }
         }
     }
@@ -81,11 +85,11 @@ public class Contact implements Serializable, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         Bundle data = new Bundle();
-        data.putSerializable(CONSTANTS.CONTACT_FIELDS.UID, getUID());
-        data.putByteArray(CONSTANTS.CONTACT_FIELDS.IMAGE, getImage());
-        data.putSerializable(CONSTANTS.CONTACT_FIELDS.NAME, getName());
-        data.putSerializable(CONSTANTS.CONTACT_FIELDS.USERNAME, getUserName());
-        data.putSerializable(CONSTANTS.CONTACT_FIELDS.PUBLIC_KEY, getPublic_key());
+        data.putSerializable(Constants.CONTACT_FIELDS.UID, getUID());
+        data.putByteArray(Constants.CONTACT_FIELDS.IMAGE, getImage());
+        data.putSerializable(Constants.CONTACT_FIELDS.NAME, getName());
+        data.putSerializable(Constants.CONTACT_FIELDS.USERNAME, getUserName());
+        data.putSerializable(Constants.CONTACT_FIELDS.PUBLIC_KEY, getPublic_key());
         dest.writeBundle(data);
     }
     public static final Parcelable.Creator<Contact> CREATOR

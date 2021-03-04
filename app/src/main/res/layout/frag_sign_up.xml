@@ -56,7 +56,7 @@
                     android:textColorHint="@color/colorPrimaryDark"
                     >
 
-                    <com.mchat.recinos.CustomViews.EditTextBackEvent
+                    <com.mchat.recinos.CustomViews.KeyboardDismissEditText
                         android:id="@+id/sign_up_username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

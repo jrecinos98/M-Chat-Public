@@ -10,16 +10,17 @@ import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.firebase.auth.FirebaseUser;
-import com.mchat.recinos.Backend.CloudDatabase;
+import com.mchat.recinos.Activities.Authentication.AuthActivity;
+import com.mchat.recinos.Activities.Home.HomeActivity;
 import com.mchat.recinos.BuildConfig;
-import com.mchat.recinos.Util.Authentication;
+import com.mchat.recinos.Backend.Authentication;
 
 
 /**
- * Entry class to decide which activity to display. No need to inflate a layout so fast and it keeps the logic clean
+ * Entry class to decide which activity to display. No need to inflate a layout, so it is fast and it keeps the logic clean
  * IMPORTANT: This Activity is not kept in the stack to prevent issues when back key pressed in Main or Login
  */
-//TODO Make this activity to a fragment. It is ess resoure intensive so it helps with start up
+//TODO Make this activity to a fragment. It is less resource intensive so it helps with start up
 public class EntryActivity extends Activity {
     @Override
     protected void onStart(){
@@ -33,8 +34,7 @@ public class EntryActivity extends Activity {
         super.onCreate(savedInstance);
         //CHECK IF IT IS A FIRST TIME LOGIN
         checkFirstRun();
-
-        FirebaseUser currentUser = CloudDatabase.getInstance().getCurrentUser();
+        FirebaseUser currentUser = Authentication.getInstance().getCurrentUser();
         // Check for existing Google Sign In account, if the user is already signed in
         if (currentUser != null) {
             startMain();
@@ -43,13 +43,14 @@ public class EntryActivity extends Activity {
             startLogin();
         }
     }
-
+    //Launches the Main Activity.
     public void startMain(){
         //I can use this to pass it to an activity but getLastSignIn works anywhere
         //account.writeToParcel();
-        Intent toMain = new Intent(getApplicationContext(), MainActivity.class);
+        Intent toMain = new Intent(getApplicationContext(), HomeActivity.class);
         startActivity(toMain);
     }
+    //Launches the Login Activity
     public void startLogin(){
         Intent toLogIn = new Intent(getApplicationContext(), AuthActivity.class);
         //Check if a previous an incomplete google sign in occured and sign user out before showing sign in screen.
@@ -65,9 +66,8 @@ public class EntryActivity extends Activity {
         }
 
     }
-
+    //Checks whether this is the first time the application has been opened after an update or install.
     private void checkFirstRun() {
-
         final String PREFS_NAME = "MyPrefsFile";
         final String PREF_VERSION_CODE_KEY = "version_code";
         final int DOESNT_EXIST = -1;

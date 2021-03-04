@@ -27,7 +27,10 @@ public interface ChatDao {
     LiveData<List<Chat>> getNameOrderedChats();
 
     @Query("SELECT * FROM chat WHERE chat.uid = :uid ")
-    Chat getChat(String uid);
+    Chat getChatWithUID(String uid);
+
+    @Query("SELECT * FROM chat WHERE chat.cid = :cid ")
+    Chat getChat(int cid);
 
     @Query("SELECT * FROM chat")
     List<Chat> getAll();

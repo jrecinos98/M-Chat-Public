@@ -4,10 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import com.mchat.recinos.Backend.CloudDatabase;
-import com.mchat.recinos.Backend.Entities.ImageMessage;
-import com.mchat.recinos.Backend.Entities.Message;
+import com.mchat.recinos.Backend.Entities.Messages.Message;
 import com.mchat.recinos.Backend.Entities.User;
-import com.mchat.recinos.Util.CONSTANTS;
+import com.mchat.recinos.Util.Constants;
 import com.mchat.recinos.Util.IO;
 import com.mchat.recinos.Util.Util;
 
@@ -18,6 +17,8 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import Protobuf.ProtoMessage;
 
@@ -26,18 +27,23 @@ import Protobuf.ProtoMessage;
 // receive messages and check the type. If it is ACK type then the id field is checked and the message is removed from the list.
 public class Client {
     public final static int CONNECTION_TIME_OUT = 5000; //ms or 5 seconds
+    //TODO Get rid of this awful thing.
     public static int CURRENT_CHAT;
 
-    private Connection connection;
+    private final Connection connection;
     private Socket connectionSocket;
-    private Context context;
-    private User primaryUser;
+    private final Context context;
+    private final User primaryUser;
     private final Map<Integer, ProtoMessage.Message> unAckedMessages;
 
     private Thread initConnectionThread;
     private Thread readThread;
     private ServerListenRunnable readRunnable;
     private Thread writeThread;
+
+    private static final int NUMBER_OF_IO_THREADS = 3;
+    //Used whenever a write request is to be made to the database. Need to call execute on it and pass a lambda func (runnable)
+    public final ExecutorService networkIO = Executors.newFixedThreadPool(NUMBER_OF_IO_THREADS);
 
     /**
      * Constructor for client class
@@ -152,7 +158,7 @@ public class Client {
          */
         private void authenticate(int attempts){
             ProtoMessage.Authentication authMessage = ProtoMessage.Authentication.newBuilder()
-                    .setType(CONSTANTS.PROTO_MESSAGE_DATA_TYPES.AUTH)
+                    .setType(Constants.PROTO_MESSAGE_DATA_TYPES.AUTH)
                     .setSenderUid(CloudDatabase.getInstance().getUID())
                     .build();
             IO.writeToStream(connection.output, authMessage.toByteArray());

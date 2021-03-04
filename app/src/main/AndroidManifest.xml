@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mchat.recinos">
 
-    <dist:module dist:instant="true" />
     <uses-permission android:name = "android.permission.INTERNET" />
     <uses-permission android:name = "android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name = "android.permission.READ_EXTERNAL_STORAGE" />
@@ -21,12 +20,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-
         tools:replace="android:allowBackup"
-
         >
 
-        <!-- the name gets resolved to com.mchat.recinos.MainActivity-->
+        <uses-library android:name="android.test.runner"
+            android:required="false" />
+        <uses-library android:name="android.test.base"
+            android:required="false" />
+        <uses-library android:name="android.test.mock"
+            android:required="false" />
+
+        <!-- The name attribute gets resolved to com.mchat.recinos.MainActivity-->
+        <!-- The noHistory attribute ensures that the activity is destroyed as soon as we navigate away from it.-->
         <activity
             android:name=".Activities.EntryActivity"
             android:label="@string/app_name"
@@ -43,45 +48,38 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- launchMode determines how a new instance of an Activity is associated to the current task.
+         For instance "singleTop" will only allow one instance of an activity to exist on top of task -->
         <activity
-            android:name=".Activities.MainActivity"
+            android:name=".Activities.Home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="keyboard|orientation|screenSize"
-            android:launchMode="standard"
-            >
-        </activity>
-        <!-- launchMode determines how a new instance of an Activity is associated to the current task -->
-        <activity
-            android:name=".Activities.SettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="keyboard|orientation|screenSize"
-            android:launchMode="standard"
+            android:launchMode="singleTop"
             >
         </activity>
         <activity
-            android:name=".Activities.ChatActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="keyboard|orientation|screenSize"
-            android:launchMode="standard"
-            >
-        </activity>
-
-        <activity
-            android:name=".Activities.AuthActivity"
+            android:name=".Activities.Home.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="keyboard|orientation|screenSize"
             android:launchMode="standard"
             >
         </activity>
         <activity
-            android:name=".Fragments.SignUpFragment"
+            android:name=".Activities.Chat.MessagingActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="keyboard|orientation|screenSize"
             android:launchMode="standard"
             >
         </activity>
         <activity
-            android:name=".Activities.NewMessageActivity"
+            android:name=".Activities.Authentication.AuthActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboard|orientation|screenSize"
+            android:launchMode="standard"
+            >
+        </activity>
+        <activity
+            android:name=".Activities.Home.NewMessageActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="keyboard|orientation|screenSize"
             android:launchMode="standard"

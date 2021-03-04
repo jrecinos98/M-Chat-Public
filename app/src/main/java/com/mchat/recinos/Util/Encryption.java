@@ -32,19 +32,19 @@ public class Encryption {
     public static KeyStore getKeyProvider(){
         KeyStore provider = null;
         try{
-            provider = KeyStore.getInstance(CONSTANTS.KEYSTORE_PROVIDER);
+            provider = KeyStore.getInstance(Constants.KEYSTORE_PROVIDER);
         }catch(KeyStoreException e){
             e.printStackTrace();
         }
         return provider;
     }
-    public static Key getKey(CONSTANTS.KEY key_type){
+    public static Key getKey(Constants.KEY key_type){
         Key key = null;
         try {
-            KeyStore provider = KeyStore.getInstance(CONSTANTS.KEYSTORE_PROVIDER);
+            KeyStore provider = KeyStore.getInstance(Constants.KEYSTORE_PROVIDER);
             provider.load(null, null);
-            KeyStore.PrivateKeyEntry entry = (KeyStore.PrivateKeyEntry) provider.getEntry(CONSTANTS.DEFAULT_KEY_ALIAS, null);
-            key = key_type == CONSTANTS.KEY.PUBLIC? entry.getCertificate().getPublicKey() : entry.getPrivateKey();
+            KeyStore.PrivateKeyEntry entry = (KeyStore.PrivateKeyEntry) provider.getEntry(Constants.DEFAULT_KEY_ALIAS, null);
+            key = key_type == Constants.KEY.PUBLIC? entry.getCertificate().getPublicKey() : entry.getPrivateKey();
         }catch(NoSuchAlgorithmException | UnrecoverableEntryException | KeyStoreException | CertificateException | IOException e){
             e.printStackTrace();
         }
@@ -61,7 +61,7 @@ public class Encryption {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 KeyGenParameterSpec spec = new KeyGenParameterSpec.Builder(
                         //The alias for the keys
-                        CONSTANTS.DEFAULT_KEY_ALIAS,
+                        Constants.DEFAULT_KEY_ALIAS,
                         KeyProperties.PURPOSE_DECRYPT | KeyProperties.PURPOSE_ENCRYPT)
                         //  RSA/ECB/PKCS1Padding
                         .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
@@ -76,7 +76,7 @@ public class Encryption {
                         .setCertificateSerialNumber(BigInteger.ONE)
                         .build();
                 //Once generated the keys are safely stored on the provider (AndroidKeyStore)
-                KeyPairGenerator keyGen = KeyPairGenerator.getInstance(KEY_ALGORITHM_RSA, CONSTANTS.KEYSTORE_PROVIDER);
+                KeyPairGenerator keyGen = KeyPairGenerator.getInstance(KEY_ALGORITHM_RSA, Constants.KEYSTORE_PROVIDER);
                 keyGen.initialize(spec);
                 keyGen.generateKeyPair();
             }
@@ -84,7 +84,7 @@ public class Encryption {
             else {
                 KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec
                         .Builder(context)
-                        .setAlias(CONSTANTS.DEFAULT_KEY_ALIAS)
+                        .setAlias(Constants.DEFAULT_KEY_ALIAS)
                         .setSubject(new X500Principal("CN=Your Company ," +
                                 " O=Your Organization" +
                                 " C=Your Coountry"))
@@ -93,7 +93,7 @@ public class Encryption {
                         .setStartDate(notBefore.getTime())
                         .setEndDate(notAfter.getTime())
                         .build();
-                KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", CONSTANTS.KEYSTORE_PROVIDER);
+                KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", Constants.KEYSTORE_PROVIDER);
                 generator.initialize(spec);
                 generator.generateKeyPair();
             }
@@ -135,7 +135,7 @@ public class Encryption {
         byte[] decrypted = null;
         try {
             Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.DECRYPT_MODE, getKey(CONSTANTS.KEY.PRIVATE));
+            cipher.init(Cipher.DECRYPT_MODE, getKey(Constants.KEY.PRIVATE));
             decrypted = cipher.doFinal(encrypted.getBytes());
             decoded = Base64.encodeToString(decrypted, Base64.DEFAULT);
         }catch(Exception e){

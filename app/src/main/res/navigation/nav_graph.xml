@@ -7,7 +7,7 @@
 
     <activity
         android:id="@+id/mainActivity"
-        android:name="com.mchat.recinos.Activities.MainActivity"
+        android:name="com.mchat.recinos.Activities.Home.HomeActivity"
         android:label="activity_main"
         tools:layout="@layout/content_main" >
         <action

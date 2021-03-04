@@ -3,26 +3,26 @@ package com.mchat.recinos.Backend.Client;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.util.Log;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.mchat.recinos.AsyncTasks.ImageDownloadTask;
+import com.mchat.recinos.CallBackInterfaces.DownloadResultCallback;
+import com.mchat.recinos.MyApplication;
+import com.mchat.recinos.Tasks.ImageDownloadTask;
 import com.mchat.recinos.Backend.CloudDatabase;
 import com.mchat.recinos.Backend.Entities.Chat;
 import com.mchat.recinos.Backend.Entities.Contact;
-import com.mchat.recinos.Backend.Entities.ImageMessage;
-import com.mchat.recinos.Backend.Entities.Message;
+import com.mchat.recinos.Backend.Entities.Messages.ImageMessage;
+import com.mchat.recinos.Backend.Entities.Messages.Message;
 import com.mchat.recinos.Backend.ViewModels.ClientViewModel;
 import com.mchat.recinos.Util.BitmapTransform;
-import com.mchat.recinos.Util.CONSTANTS;
+import com.mchat.recinos.Util.Constants;
 import com.mchat.recinos.Util.IO;
 import com.mchat.recinos.Util.Util;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ import Protobuf.ProtoMessage;
 //TODO, To avoid race condition when using imagedownload task by using the URL (or UID) as key to get the chat that needs to get image
 // set. When the callback (onImageDownloadResult) defined below is called. We return the image bytes and the URL(or UID) used to get the right chat from hashmap
 
-class ServerListenRunnable implements Runnable, ImageDownloadTask.DownloadResultCallback{
+class ServerListenRunnable implements Runnable{
     private AtomicBoolean running = new AtomicBoolean(false);
     private Connection connection ;
     private Context context;
@@ -58,7 +58,7 @@ class ServerListenRunnable implements Runnable, ImageDownloadTask.DownloadResult
     public ServerListenRunnable(Context context, Connection connection, Map<Integer, ProtoMessage.Message> unAckedMessages ){
         this.context = context;
         this.connection = connection;
-        this.clientViewModel = new ClientViewModel((Application) context);
+        this.clientViewModel = new ClientViewModel((Application) context, MyApplication.getClient());
 
         this.pendingChats = new HashMap<>();
         this.pendingMessages = new HashMap<>();
@@ -95,7 +95,7 @@ class ServerListenRunnable implements Runnable, ImageDownloadTask.DownloadResult
      */
     private void sendAck(int id){
         ProtoMessage.Message ack =ProtoMessage.Message.newBuilder()
-                .setType(CONSTANTS.PROTO_MESSAGE_DATA_TYPES.ACK)
+                .setType(Constants.PROTO_MESSAGE_DATA_TYPES.ACK)
                 .setMsgId(id)
                 .build();
         WriteToServerRunnable ackRunnable = new WriteToServerRunnable(ack, connection.output);
@@ -105,14 +105,14 @@ class ServerListenRunnable implements Runnable, ImageDownloadTask.DownloadResult
 
     private void handleNonTextMessage(Message message, ProtoMessage.Message protoMessage){
         String extension = protoMessage.getMessage().getMimeType();
-        if(message.getType() == CONSTANTS.MESSAGE_DATA_TYPES.IMAGE){
+        if(message.getType() == Constants.MESSAGE_DATA_TYPES.IMAGE){
             ImageMessage imageMessage = (ImageMessage) message;
             String fileName = Util.generateFileNameWithExtension(String.valueOf(message.getTimeStamp()),  extension);
             Bitmap sentImage = ((ImageMessage) message).getImage();
             ((ImageMessage) message).setImage(BitmapTransform.scaleUpBitmap(sentImage,350, context));
-            imageMessage.setUri(fileName);
+            imageMessage.setFileName(fileName);
         }
-        else if(message.getType() == CONSTANTS.MESSAGE_DATA_TYPES.AUDIO){
+        else if(message.getType() == Constants.MESSAGE_DATA_TYPES.AUDIO){
 
         }
     }
@@ -125,7 +125,7 @@ class ServerListenRunnable implements Runnable, ImageDownloadTask.DownloadResult
             if(protoMessage != null) {
                 //Log.d("CLIENT_READ", protoMessage.toString());
                 long receivedTime = Calendar.getInstance().getTime().getTime();
-                if (protoMessage.getType() == CONSTANTS.PROTO_MESSAGE_DATA_TYPES.ACK) {
+                if (protoMessage.getType() == Constants.PROTO_MESSAGE_DATA_TYPES.ACK) {
                     synchronized (unAckedMessages) {
                         unAckedMessages.remove(protoMessage.getMsgId());
                     }
@@ -136,7 +136,7 @@ class ServerListenRunnable implements Runnable, ImageDownloadTask.DownloadResult
 
                 //Convert ProtoBuf to a Message object
                 Message msg = Message.parseProtoBuf(protoMessage.getMessage(), receivedTime);
-                if (msg.getType() != CONSTANTS.MESSAGE_DATA_TYPES.TEXT) {
+                if (msg.getType() != Constants.MESSAGE_DATA_TYPES.TEXT) {
                     handleNonTextMessage(msg, protoMessage);
                 }
                 String sender_id = protoMessage.getSenderUid();
@@ -166,13 +166,13 @@ class ServerListenRunnable implements Runnable, ImageDownloadTask.DownloadResult
      * @param msg Message object
      */
     private void addToExistingChat(String sender_id, Message msg){
-        Chat chat = clientViewModel.getChat(sender_id);
+        Chat chat = clientViewModel.getChatWithUID(sender_id);
         msg.setOwner_cid(chat.getCid());
         int unread_count = chat.getUnreadCount();
         if(chat.getCid() != Client.CURRENT_CHAT)
             unread_count++;
         clientViewModel.updateChatPreview(sender_id,  msg.getPreview(), Util.getTime(), unread_count);
-        clientViewModel.insert(msg);
+        clientViewModel.receiveMessage(msg);
     }
 
     /**
@@ -184,13 +184,13 @@ class ServerListenRunnable implements Runnable, ImageDownloadTask.DownloadResult
         //Add the received message to the HashMap of pending messages (Any other received message with tht UID will be added)
         List<Message> messages =  new ArrayList<>(Collections.singletonList(msg));
         pendingMessages.put(sender_id, messages);
-
+        //clientViewModel.insertChat();
         //Using uid get username
         CloudDatabase.getInstance().getUserName(sender_id).addOnCompleteListener((userNameTask) -> {
             if (userNameTask.isSuccessful()){
                 DocumentSnapshot usernameDoc = userNameTask.getResult();
                 if(usernameDoc != null) {
-                    String username = (String) usernameDoc.get(CONSTANTS.USERS_ENTRY.USERNAME);
+                    String username = (String) usernameDoc.get(Constants.USERS_ENTRY.USERNAME);
                     //Using username get public data
                     CloudDatabase.getInstance().getUserInfoFromUserName(username).addOnCompleteListener((userInfoTask) -> {
                         if (userInfoTask.isSuccessful()) {
@@ -224,53 +224,57 @@ class ServerListenRunnable implements Runnable, ImageDownloadTask.DownloadResult
      */
     private void startDownload(Contact friend, int cid){
         //Start task to fetch the contact's image
-        ImageDownloadTask.DownloadImageTask imageTask = new ImageDownloadTask.DownloadImageTask(cid, ServerListenRunnable.this);
+        ImageDownloadTask.DownloadImageTask imageTask = new ImageDownloadTask.DownloadImageTask(cid, onImageDownloadResult());
         try {
             imageTask.execute(friend.getPhoto_URL()).get(); //get() will make the thread wait till execution is done
         }catch(Exception e){
             Log.d("SERVER_LISTEN", e.toString());
         }
     }
+
     /**
-     * Callback for ImageDownloadTask
-     * @param id Chat identifier number
-     * @param image returns the downloaded image as bytes
+     * Downloads a User's profile image
+     * @return
      */
-    public void onImageDownloadResult(int id , byte[] image){
-        Chat chat;
-        //It should be fine to remove chat here. If any message for this new chat arrives then it will be added to the message list
-        synchronized (pendingChats) {
-            chat = pendingChats.remove(id);
-        }
-        if(chat != null) {
+    public DownloadResultCallback onImageDownloadResult(){
+        return(id, image)->{
+            Chat chat;
+            //It should be fine to remove chat here. If any message for this new chat arrives then it will be added to the message list
+            synchronized (pendingChats) {
+                chat = pendingChats.remove(id);
+            }
+            if(chat != null) {
             /*BitmapTransform.SerialBitmap serialBitmap = new BitmapTransform.SerialBitmap(image);
             String filename = Util.generateFileNameWithExtension(chat.getFriendUid(), "jpg");
             //IO.saveInternalFile(context, CONSTANTS.INTERNAL_DIRECTORY.CONTACT_IMAGES, filename, serialBitmap);*/
-            //Update image on chat
-            chat.getContact().setImage(image);
+                //Update image on chat
+                chat.getContact().setImage(image);
 
-            //Retrieve the outstanding messages list. Use synchronized block to prevent race condition.
-            //This method may get called right as a new message is added that should belong to list
-            //If we synchronize then any time this ist is used outside this thread it will block.
-            synchronized (pendingMessages) {
-                //remove list
-                List<Message> messages = pendingMessages.remove(chat.getFriendUid());
-                if (messages != null) {
-                    //Save all the pending messages and increase count
-                    for (int i = 0; i < messages.size(); i++) {
-                        Message message = messages.get(i);
-                        //update the preview to match the last received msg
-                        if(i == (messages.size()-1)){
-                            chat.setPreview(message.getPreview());
+                //Retrieve the outstanding messages list. Use synchronized block to prevent race condition.
+                //This method may get called right as a new message is added that should belong to list
+                //If we synchronize then any time this ist is used outside this thread it will block.
+                synchronized (pendingMessages) {
+                    //remove list
+                    List<Message> messages = pendingMessages.remove(chat.getFriendUid());
+                    if (messages != null) {
+                        //Save all the pending messages and increase count
+                        for (int i = 0; i < messages.size(); i++) {
+                            Message message = messages.get(i);
+                            //update the preview to match the last received msg
+                            if(i == (messages.size()-1)){
+                                chat.setPreview(message.getPreview());
+                            }
+                            //Set the msg owner ID or else it wont be matched
+                            message.setOwner_cid(chat.getCid());
+                            chat.increaseUnread();
+                            clientViewModel.receiveMessage(messages.get(i));
                         }
-                        //Set the msg owner ID or else it wont be matched
-                        message.setOwner_cid(chat.getCid());
-                        chat.increaseUnread();
-                        clientViewModel.insert(messages.get(i));
                     }
+                    clientViewModel.insert(chat);
                 }
-                clientViewModel.insert(chat);
             }
-        }
+
+        };
+
     }
 }

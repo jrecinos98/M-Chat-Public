@@ -9,7 +9,7 @@ import android.widget.ProgressBar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.multidex.MultiDexApplication;
 
-import com.mchat.recinos.AsyncTasks.InitClientTask;
+import com.mchat.recinos.Tasks.InitClientTask;
 import com.mchat.recinos.Backend.Client.Client;
 import com.mchat.recinos.Backend.Entities.User;
 import com.mchat.recinos.Backend.LocalDatabase;
@@ -47,13 +47,14 @@ public class MyApplication extends MultiDexApplication implements Application.Ac
             client.initClient();
         }
     }
-
+    //Primarily used when the user signs out of the app.
     public static void resetClient(){
         client.disconnect();
         client= null;
         //Reset the Singleton variable
         LocalDatabase.reset();
     }
+    //Called when the app first starts. It creates an async task to initialize the client.
     public static void startAsync(ProgressBar p){
         if(!MyApplication.getClient().isConnected()){
             p.setIndeterminate(true);

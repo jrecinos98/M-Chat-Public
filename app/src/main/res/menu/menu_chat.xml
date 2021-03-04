@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.mchat.recinos.Activities.ChatActivity" >
+    tools:context="com.mchat.recinos.Activities.Chat.MessagingActivity" >
     <!-- Can use icon attribute to just use image -->
 
     <item android:id="@+id/convo_settings"

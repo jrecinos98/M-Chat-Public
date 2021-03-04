@@ -97,9 +97,7 @@ public class BitmapTransform  {
         if(photo.getHeight() < h || photo.getWidth() < w){
             return photo;
         }
-
         photo= android.graphics.Bitmap.createScaledBitmap(photo, w, h, true);
-
         return photo;
     }
     public static android.graphics.Bitmap scaleUpBitmap(android.graphics.Bitmap photo, int newHeight, Context context) {
@@ -114,7 +112,6 @@ public class BitmapTransform  {
         //May need to check if scale or not
 
         photo= android.graphics.Bitmap.createScaledBitmap(photo, w, h, true);
-
         return photo;
     }
     private static int imageRotationAngle(Context context, Uri imageUri) {
@@ -134,7 +131,6 @@ public class BitmapTransform  {
                     rotate = 90;
                     break;
             }
-
             Log.d("RotateImage", "Exif orientation: " + orientation);
             Log.d("RotateImage", "Rotate value: " + rotate);
         } catch (Exception e) {
@@ -189,6 +185,7 @@ public class BitmapTransform  {
         byte[] imgBytes =stream.toByteArray();
         return BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length );
     }
+
     public static Bitmap compressBitmap(Bitmap bitmap, Bitmap.CompressFormat compressionType, int quality){
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         //Use the file extension to determine the type of compression to use

@@ -27,10 +27,10 @@
     <string name="sign_up_button">                  <b>Register.</b>            </string>
 
     <string name="delete_acct">                     Delete Account              </string>
-    <string name = "no_chats_message">              Once you start a new
+    <string name="no_chats_message">              Once you start a new
                                                     conversation, you\'ll see
                                                     it listed here              </string>
-    <string name = "no_calls_message">              Once you have a new phone
+    <string name="no_calls_message">              Once you have a new phone
                                                     conversation, you\'ll see
                                                     it listed here              </string>
     <string name="test_msg">                        Add Test Msg                </string>
@@ -38,5 +38,16 @@
     <string name="new_msg">                         New Message                 </string>
     <string name="to">                              To                          </string>
     <string name="image_placeholder_text">          Image                       </string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
