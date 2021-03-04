@@ -1,35 +1,16 @@
-# M-Chat-Android
-Messaging application for Android.
+# M'Chat Android Messaging
 
-__ProtoBuffer Schema__:
-=======================
-  Messages:
-  ---------
-  - ### Type 0 **(AUTH)**: 
-      1. **client** -> **server:** Client indicates it wants to authenticate.
-          - **UID:** The unique identifier of the client attempting to authenticate
-          - **Token:** Token used for secure authentication.
-      2. **server** -> **client:** Server ACK signals that authentication was successful.
-          - Server sends back an ACK message of type 0
-  - ### Type 1 **(MESSAGE)**:
-      1. **client** -> **server:** Client indicates that it is sending a message (payload field not empty). 
-          - **Message ID:** The **client** assigns the message a unique id that the **server** utilizes when sending an ACK
-          - ### Payload:
-              - **OP Code:** The kind of message the client is sending (Text, Image, Audio,Video, PDF, etc...)
-              - **Time Stamp:** The time at which the message was created.
-              - **Destination ID:** The ID of the destination user.
-              - **Key:** The cryptographic key used to encrypt the message
-              - **Text (OPTIONAL):** If the op code is for a text message this field is used.
-              - **Data (OPTIONAL):** If the op code involves any kind of message that is not text then this field will be used.
-              - **Format (OPTIONAL):** If the data field it is set this field will indicate what type of format the data is encoded in.
-  - ### Type 2 **(ACK)**:
-      1. **server** -> **client:** Server ACK for a received message.
-          - **Message ID:** ID of the received message the server is sending an ACK for.
-      2. **client** -> **server:** Client ACK for a received message
-          - **Message ID:** same as above
-  - ### Type 3:
-      1. **Reserved (Potentially for Single person message)**
-  - ### Type 5:
-      1. **Reserved (Potentially for group messages)**
-  - ### Type 6:
-      1. **Can represent a commonly used command the client requests from the server**
+- **Description** 
+
+An Android, end-to-end encryption messaging application that allows users to send text and multimedia messages through Wi-Fi/LTE. It is a privacy and security centered messaging app.
+
+End-to-end encryption is ensured through the use of public key encryption. Each user had their own public and private key pair that are used to decrypt messages received from others (private key) and to encrypt messages oncoming messages (public key). This ensures that only the destination user will get access to the messages. To enforce privacy,a user does not need to provide a phone number or name to sign up. As long as they have an email account they can utilize the app. Furthermore, messages are not permanently stored in the cloud and instead thy are stored on the user's device. This way there is no data about the users in a database that can be exploited.
+
+Currently M'Chat supports sending text messages and images over the network. It does not rely on a data plan as all messages are IP packets. Voice over IP (VoIP) is in the pipeline and will be added in time.
+___
+- **Relevant Area**: Mobile App Development.
+___
+- **Tools / Platforms**: Java, Android, Android Jetpack, Android Studio.
+___
+- **Preview**:  https://youtu.be/fgOq-c-jtUo
+
